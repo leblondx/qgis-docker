@@ -132,14 +132,11 @@ class PackagesFile:
     @property
     def packages(self):
         """Returns all binary packages in this Packages files"""
-        packages = []
-        for package_content in self.__content.split('\n\n'):
-            if not package_content:
-                continue
-
-            packages.append(BinaryPackage(package_content))
-
-        return packages
+        return [
+            BinaryPackage(package_content)
+            for package_content in self.__content.split('\n\n')
+            if package_content
+        ]
 
 
 class BinaryPackage:
@@ -265,9 +262,9 @@ class APTRepository:
                 'dists',
                 self.dist,
                 component,
-                'binary-' + arch,
-                'Packages'
-        )
+                f'binary-{arch}',
+                'Packages',
+            )
 
         packages_file = _download_compressed(url)
 
@@ -307,13 +304,7 @@ class APTRepository:
         name (str): name of the package
         """
 
-        packages = []
-
-        for package in self.packages:
-            if package.package == name:
-                packages.append(package)
-
-        return packages
+        return [package for package in self.packages if package.package == name]
 
 
 class APTSources:
