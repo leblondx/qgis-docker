@@ -17,11 +17,7 @@ if __name__ == "__main__":
     distro = args.dist
     #default_distro = args.default_dist
 
-    if args.qgis == 'dekstop':
-        repo_name = 'qgis'
-    else:
-        repo_name = 'qgis-server'
-
+    repo_name = 'qgis' if args.qgis == 'dekstop' else 'qgis-server'
     url = f'https://registry.hub.docker.com/v2/repositories/opengisch/{repo_name}/tags?page_size=10000'
     data = requests.get(url).content.decode('utf-8')
     tags = json.loads(data)['results']

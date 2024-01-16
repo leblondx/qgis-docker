@@ -15,20 +15,16 @@ if __name__ == "__main__":
     args = parser.parse_args()
     dist = args.dist
 
-    if args.qgis == 'dekstop':
-        package_name = 'qgis'
-    else:
-        package_name = 'qgis-server'
-
+    package_name = 'qgis' if args.qgis == 'dekstop' else 'qgis-server'
     data = {}
     for ltr in (True, False):
-        url = 'https://qgis.org/ubuntu{}'.format('-ltr' if ltr else '')
+        url = f"https://qgis.org/ubuntu{'-ltr' if ltr else ''}"
         components = ['main']
         repo = APTRepository(url, dist, components)
         package = repo.get_packages_by_name(package_name)[0]
         assert package.package == package_name
         # https://regex101.com/r/lkuibv/2
-        p = re.compile('^1:(\d(?:\.\d+)+)(?:\+\d+{})(?:\-\d+)?$'.format(dist))
+        p = re.compile(f'^1:(\d(?:\.\d+)+)(?:\+\d+{dist})(?:\-\d+)?$')
         m = p.match(package.version)
         data['ltr' if ltr else 'stable'] = m.group(1)
 
